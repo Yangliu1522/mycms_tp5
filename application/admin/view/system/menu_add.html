@@ -1,0 +1,120 @@
+<!--{include file="admin/header"}-->
+<article class="page-container">
+    <form class="form form-horizontal" method="post" onsubmit="return false;" id="form-admin-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>菜单名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="<{$menu['menu_name']}>" placeholder="账户，可中文" id="menuName" name="menu_name">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>排序：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="<{$menu['listorder']}>" placeholder="账户，可中文" id="order" name="listorder">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>父级菜单：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select class="select" size="1" name="parent">
+                        <option value="0">一级菜单</option>
+                        <!--{volist name="pemnu" id="vo"}-->
+                        <option value="<{$vo['mid']}>" <!--{if condition="isset($menu['parent']) && $vo['mid'] == $menu['parent']"}-->selected<!--{/if}-->><{$vo['menu_name']}></option>
+                        <!--{/volist}-->
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>是否显示：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="ishidden" value="0" type="radio" id="sex-1" checked>
+                    <label for="sex-1">是</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="sex-2" value="1" name="ishidden">
+                    <label for="sex-2">否</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>菜单地址：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="<{$menu['menu_url']}>" placeholder="账户，可中文" id="menuAdd" name="menu_url">
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input type="hidden" value="1" name="gid">
+                <input type="hidden" value="system" name="pname">
+                <input type="hidden" value="1" name="tid">
+                <!--{if condition="isset($hasid)"}-->
+                <input type="hidden" name="uid" value="<{$menu['mid']}>">
+                <!--{/if}-->
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+
+    </form>
+</article>
+
+<!--{include file="admin/footer"}-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        var options = {
+            // target:        '#flash_success',  // your response show in this ID
+            // beforeSubmit:  callValidationFunction,
+            success:  uploads
+        };
+        $("#form-admin-add").validate({
+            rules:{
+                menuName:{
+                    required:true,
+                    minlength:4,
+                    maxlength:16
+                },
+                mid:{
+                    required:true,
+                },
+                listorder:{
+                    required:true,
+
+                },
+                menuAdd:{
+                    required:true,
+                    //isPhone:true,
+                },
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                $(form).ajaxSubmit(options);
+//                console.log(form)
+//
+            }
+        });
+
+        function uploads(res,status){
+            if(res.error == 0) {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.$('.btn-refresh').click();
+                parent.layer.close(index);
+            }else{
+                show_errors(res.msg,$("[name='"+res.el+"']"));
+            }
+        }
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
